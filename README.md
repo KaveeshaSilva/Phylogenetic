@@ -19,5 +19,5 @@ include the steps
 ## Get Robinson Distances
 
 Run `python Robinson_Distance.py` 
-This command will generate robinson_distances.txt file in the project folder.
+This command will generate robinson_distances.txt file in the project folder which include robinson distances. This command also generate phylogenetic trees for each protein as text files.
 
