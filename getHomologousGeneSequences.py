@@ -1,5 +1,7 @@
+from msilib.schema import Directory
 import pandas as pd
 from Bio import SeqIO
+import os
 
 # extract common_bacteria_set
 
@@ -68,13 +70,19 @@ def extractGeneSequences(positions):
 
 
 def writeGeneSequences(geneSequences):
+    # Create the directory
+    # 'GeeksForGeeks' in
+    # '/home / User / Documents'
+    directory = 'homologousGeneSequences'
+    path = os.path.join(os.getcwd(), directory)
+    if(not os.path.isdir(path)):
+        os.mkdir(path)
     for protein in geneSequences:
         new_fasta = []
         for bacteria in geneSequences[protein]:
             new_fasta.append('>%s\n%s' %
                              (bacteria, geneSequences[protein][bacteria]))
-        outputFile = "homologousGeneSequences/" + \
-            '_'.join(protein.split(' '))+".fasta"
+        outputFile = directory+"/" + '_'.join(protein.split(' '))+".fasta"
         with open(outputFile, 'w') as f:
             f.write('\n'.join(new_fasta))
 

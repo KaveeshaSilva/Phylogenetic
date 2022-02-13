@@ -554,6 +554,14 @@ Support/Feedback:
 
 
 # No options... print help.
+folder = 'sequence_alignments'
+path = os.path.join(os.getcwd(), folder)
+if(not os.path.isdir(path)):
+    os.mkdir(path)
+folder = 'tempFiles'
+path = os.path.join(os.getcwd(), folder)
+if(not os.path.isdir(path)):
+    os.mkdir(path)
 files = os.listdir(os.getcwd()+'//homologousGeneSequences')
 for file in files:
     if numOpts < 2:

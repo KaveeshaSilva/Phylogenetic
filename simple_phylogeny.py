@@ -531,6 +531,10 @@ Support/Feedback:
 
 
 # No options... print help.
+folder = 'phylogenetic_trees'
+path = os.path.join(os.getcwd(), folder)
+if(not os.path.isdir(path)):
+    os.mkdir(path)
 files = os.listdir(os.getcwd()+'//sequence_alignments')
 for file in files:
     if numOpts < 2:

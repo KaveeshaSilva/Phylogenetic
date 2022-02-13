@@ -73,4 +73,8 @@ def main():
 
 
 if __name__ == "__main__":
+    folder = 'phylogenetic_tree_structures'
+    path = os.path.join(os.getcwd(), folder)
+    if(not os.path.isdir(path)):
+        os.mkdir(path)
     main()
