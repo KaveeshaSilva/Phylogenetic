@@ -36,6 +36,7 @@ import requests
 import platform
 from xmltramp2 import xmltramp
 from optparse import OptionParser
+import shutil
 
 try:
     from urllib.parse import urlparse, urlencode
@@ -71,27 +72,30 @@ numOpts = len(sys.argv)
 parser = OptionParser(add_help_option=False)
 
 # Tool specific options (Try to print all the commands automatically)
-parser.add_option('--tree', type=str, help=('Determines the outputs that the Simple Phylogeny tool produces.'))
+parser.add_option('--tree', type=str,
+                  help=('Determines the outputs that the Simple Phylogeny tool produces.'))
 parser.add_option('--kimura', action='store_true', help=('Controls whether Simple Phylogeny attempts to correct for multiple'
                   'substitutions at the same site. This is recommended to be set on for'
-                  'more divergent sequences and has the effect of stretching branch'
-                  'lengths. For very divergent sequences the distances cannot be reliably'
-                  'corrected.'))
+                                                         'more divergent sequences and has the effect of stretching branch'
+                                                         'lengths. For very divergent sequences the distances cannot be reliably'
+                                                         'corrected.'))
 parser.add_option('--tossgaps', action='store_true', help=('With this option enabled columns where any of the sequences in the'
                   'input have a gap will be excluded, forcing the alignment to use only'
-                  'positions where information can be included from all sequences.'))
+                                                           'positions where information can be included from all sequences.'))
 parser.add_option('--clustering', type=str, help=('Clustering Methods'))
-parser.add_option('--pim', action='store_true', help=('Output the percentage identity matrix'))
+parser.add_option('--pim', action='store_true',
+                  help=('Output the percentage identity matrix'))
 parser.add_option('--sequence', type=str, help=('Phylogeny using an alignment directly entered into the input box in a'
                   'supported format. Alignment formats supported include Clustal, FASTA'
-                  'and MSF. Partially formatted or unaligned sequences are not accepted.'
-                  'Adding a return to the end of the sequence may help the Simple'
-                  'Phylogeny tool understand the input. Note that directly using data'
-                  'from word processors may yield unpredictable results as hidden/control'
-                  'characters may be present. There is currently a limit of 500 sequences'
-                  'and 1MB of data.'))
+                                                'and MSF. Partially formatted or unaligned sequences are not accepted.'
+                                                'Adding a return to the end of the sequence may help the Simple'
+                                                'Phylogeny tool understand the input. Note that directly using data'
+                                                'from word processors may yield unpredictable results as hidden/control'
+                                                'characters may be present. There is currently a limit of 500 sequences'
+                                                'and 1MB of data.'))
 # General options
-parser.add_option('-h', '--help', action='store_true', help='Show this help message and exit.')
+parser.add_option('-h', '--help', action='store_true',
+                  help='Show this help message and exit.')
 parser.add_option('--email', help='E-mail address.')
 parser.add_option('--title', help='Job title.')
 parser.add_option('--outfile', help='File name for results.')
@@ -99,15 +103,22 @@ parser.add_option('--outformat', help='Output format for results.')
 parser.add_option('--asyncjob', action='store_true', help='Asynchronous mode.')
 parser.add_option('--jobid', help='Job identifier.')
 parser.add_option('--polljob', action="store_true", help='Get job result.')
-parser.add_option('--pollFreq', type='int', default=3, help='Poll frequency in seconds (default 3s).')
+parser.add_option('--pollFreq', type='int', default=3,
+                  help='Poll frequency in seconds (default 3s).')
 parser.add_option('--status', action="store_true", help='Get job status.')
-parser.add_option('--resultTypes', action='store_true', help='Get result types.')
-parser.add_option('--params', action='store_true', help='List input parameters.')
+parser.add_option('--resultTypes', action='store_true',
+                  help='Get result types.')
+parser.add_option('--params', action='store_true',
+                  help='List input parameters.')
 parser.add_option('--paramDetail', help='Get details for parameter.')
-parser.add_option('--quiet', action='store_true', help='Decrease output level.')
-parser.add_option('--verbose', action='store_true', help='Increase output level.')
-parser.add_option('--version', action='store_true', help='Prints out the version of the Client and exit.')
-parser.add_option('--debugLevel', type='int', default=debugLevel, help='Debugging level.')
+parser.add_option('--quiet', action='store_true',
+                  help='Decrease output level.')
+parser.add_option('--verbose', action='store_true',
+                  help='Increase output level.')
+parser.add_option('--version', action='store_true',
+                  help='Prints out the version of the Client and exit.')
+parser.add_option('--debugLevel', type='int',
+                  default=debugLevel, help='Debugging level.')
 parser.add_option('--baseUrl', default=baseUrl, help='Base URL for service.')
 
 (options, args) = parser.parse_args()
@@ -211,9 +222,11 @@ def printGetParameters():
 # Get input parameter information
 def serviceGetParameterDetails(paramName):
     printDebugMessage(u'serviceGetParameterDetails', u'Begin', 1)
-    printDebugMessage(u'serviceGetParameterDetails', u'paramName: ' + paramName, 2)
+    printDebugMessage(u'serviceGetParameterDetails',
+                      u'paramName: ' + paramName, 2)
     requestUrl = baseUrl + u'/parameterdetails/' + paramName
-    printDebugMessage(u'serviceGetParameterDetails', u'requestUrl: ' + requestUrl, 2)
+    printDebugMessage(u'serviceGetParameterDetails',
+                      u'requestUrl: ' + requestUrl, 2)
     xmlDoc = restRequest(requestUrl)
     doc = xmltramp.parse(xmlDoc)
     printDebugMessage(u'serviceGetParameterDetails', u'End', 1)
@@ -234,7 +247,8 @@ def printGetParameterDetails(paramName):
             print(u"\t" + unicode(value.label))
             if hasattr(value, u'properties'):
                 for wsProperty in value.properties:
-                    print(u"\t" + unicode(wsProperty.key) + u"\t" + unicode(wsProperty.value))
+                    print(u"\t" + unicode(wsProperty.key) +
+                          u"\t" + unicode(wsProperty.value))
     printDebugMessage(u'printGetParameterDetails', u'End', 1)
 
 
@@ -259,7 +273,8 @@ def serviceRun(email, title, params):
         http_headers = {u'User-Agent': user_agent}
         req = Request(requestUrl, None, http_headers)
         # Make the submission (HTTP POST).
-        reqH = urlopen(req, requestData.encode(encoding=u'utf_8', errors=u'strict'))
+        reqH = urlopen(req, requestData.encode(
+            encoding=u'utf_8', errors=u'strict'))
         jobId = unicode(reqH.read(), u'utf-8')
         reqH.close()
     except HTTPError as ex:
@@ -300,7 +315,8 @@ def serviceGetResultTypes(jobId):
     printDebugMessage(u'serviceGetResultTypes', u'Begin', 1)
     printDebugMessage(u'serviceGetResultTypes', u'jobId: ' + jobId, 2)
     requestUrl = baseUrl + u'/resulttypes/' + jobId
-    printDebugMessage(u'serviceGetResultTypes', u'requestUrl: ' + requestUrl, 2)
+    printDebugMessage(u'serviceGetResultTypes',
+                      u'requestUrl: ' + requestUrl, 2)
     xmlDoc = restRequest(requestUrl)
     doc = xmltramp.parse(xmlDoc)
     printDebugMessage(u'serviceGetResultTypes', u'End', 1)
@@ -391,14 +407,15 @@ def getResult(jobId):
                 if outputLevel > 1:
                     print("Getting %s" % unicode(resultType[u'identifier']))
                 # Get the result
-                result = serviceGetResult(jobId, unicode(resultType[u'identifier']))
+                result = serviceGetResult(
+                    jobId, unicode(resultType[u'identifier']))
                 if (unicode(resultType[u'mediaType']) == u"image/png"
                         or unicode(resultType[u'mediaType']) == u"image/jpeg"
                         or unicode(resultType[u'mediaType']) == u"application/gzip"):
                     fmode = 'wb'
                 else:
                     fmode = 'w'
-
+                filename = 'tempFiles\\'+filename
                 try:
                     fh = open(filename, fmode)
                     fh.write(result)
@@ -409,6 +426,15 @@ def getResult(jobId):
                     fh.write(result)
                     fh.close()
                 if outputLevel > 0:
+                    if(str(resultType['fileSuffix']) == "ph"):
+                        directory = os.getcwd()
+
+                        original = directory+"\\"+filename
+                        target = directory+"\\phylogenetic_trees\\" + \
+                            (file.split('.')[0]).split(
+                                '\\')[-1]+".ph"
+
+                        shutil.copyfile(original, target)
                     print("Creating result file: " + filename)
     printDebugMessage(u'getResult', u'End', 1)
 
@@ -505,117 +531,116 @@ Support/Feedback:
 
 
 # No options... print help.
-if numOpts < 2:
-    print_usage()
-elif options.help:
-    print_usage()
-# List parameters
-elif options.params:
-    printGetParameters()
-# Get parameter details
-elif options.paramDetail:
-    printGetParameterDetails(options.paramDetail)
-# Print Client version
-elif options.version:
-    print("Revision: %s" % version)
-    sys.exit()
-# Submit job
-elif options.email and not options.jobid:
-    params = {}
-    if len(args) == 1 and "true" not in args and "false" not in args:
-        if os.path.exists(args[0]):  # Read file into content
-            params[u'sequence'] = readFile(args[0])
-        else:  # Argument is a sequence id
-            params[u'sequence'] = args[0]
-    elif len(args) == 2 and "true" not in args and "false" not in args:
-        if os.path.exists(args[0]) and os.path.exists(args[1]):  # Read file into content
-            params[u'asequence'] = readFile(args[0])
-            params[u'bsequence'] = readFile(args[1])
-        else:  # Argument is a sequence id
-            params[u'asequence'] = args[0]
-            params[u'bsequence'] = args[0]
-    elif hasattr(options, "sequence") or (hasattr(options, "asequence") and hasattr(options, "bsequence")):  # Specified via option
-        if hasattr(options, "sequence"):
-            if os.path.exists(options.sequence):  # Read file into content
-                params[u'sequence'] = readFile(options.sequence)
-            else:  # Argument is a sequence id
-                params[u'sequence'] = options.sequence
-        elif hasattr(options, "asequence") and hasattr(options, "bsequence"):
-            if os.path.exists(options.asequence) and os.path.exists(options.bsequence):  # Read file into content
-                params[u'asequence'] = readFile(options.asequence)
-                params[u'bsequence'] = readFile(options.bsequence)
-            else:  # Argument is a sequence id
-                params[u'asequence'] = options.asequence
-                params[u'bsequence'] = options.bsequence
+files = os.listdir(os.getcwd()+'//sequence_alignments')
+for file in files:
+    if numOpts < 2:
+        print_usage()
+    elif options.help:
+        print_usage()
+    # List parameters
+    elif options.params:
+        printGetParameters()
+    # Get parameter details
+    elif options.paramDetail:
+        printGetParameterDetails(options.paramDetail)
+    # Print Client version
+    elif options.version:
+        print("Revision: %s" % version)
+        sys.exit()
+    # Submit job
+    elif options.email and not options.jobid:
+        params = {}
+        # if len(args) == 1 and "true" not in args and "false" not in args:
+        #     if os.path.exists(args[0]):  # Read file into content
+        #         params[u'sequence'] = readFile(args[0])
+        #     else:  # Argument is a sequence id
+        #         params[u'sequence'] = args[0]
+        # elif len(args) == 2 and "true" not in args and "false" not in args:
+        #     # Read file into content
+        #     if os.path.exists(args[0]) and os.path.exists(args[1]):
+        #         params[u'asequence'] = readFile(args[0])
+        #         params[u'bsequence'] = readFile(args[1])
+        #     else:  # Argument is a sequence id
+        #         params[u'asequence'] = args[0]
+        #         params[u'bsequence'] = args[0]
+        # elif hasattr(options, "sequence") or (hasattr(options, "asequence") and hasattr(options, "bsequence")):  # Specified via option
+        #     if hasattr(options, "sequence"):
+        #         if os.path.exists(options.sequence):  # Read file into content
+        #             params[u'sequence'] = readFile(options.sequence)
+        #         else:  # Argument is a sequence id
+        #             params[u'sequence'] = options.sequence
+        #     elif hasattr(options, "asequence") and hasattr(options, "bsequence"):
+        #         # Read file into content
+        #         if os.path.exists(options.asequence) and os.path.exists(options.bsequence):
+        #             params[u'asequence'] = readFile(options.asequence)
+        #             params[u'bsequence'] = readFile(options.bsequence)
+        #         else:  # Argument is a sequence id
+        #             params[u'asequence'] = options.asequence
+        #             params[u'bsequence'] = options.bsequence
 
-    # Pass default values and fix bools (without default value)
+        # Pass default values and fix bools (without default value)
+        params[u'sequence'] = readFile(
+            'sequence_alignments\\'+file.split('\\')[-1])
+        if not options.tree:
+            params['tree'] = 'phylip'
+        if options.tree:
+            params['tree'] = options.tree
 
-    if not options.tree:
-        params['tree'] = 'phylip'
-    if options.tree:
-        params['tree'] = options.tree
-    
+        if not options.kimura:
+            params['kimura'] = 'false'
+        if options.kimura:
+            params['kimura'] = options.kimura
 
-    if not options.kimura:
-        params['kimura'] = 'false'
-    if options.kimura:
-        params['kimura'] = options.kimura
-    
+        if not options.tossgaps:
+            params['tossgaps'] = 'false'
+        if options.tossgaps:
+            params['tossgaps'] = options.tossgaps
 
-    if not options.tossgaps:
-        params['tossgaps'] = 'false'
-    if options.tossgaps:
-        params['tossgaps'] = options.tossgaps
-    
+        if not options.clustering:
+            params['clustering'] = 'Neighbour-joining'
+        if options.clustering:
+            params['clustering'] = options.clustering
 
-    if not options.clustering:
-        params['clustering'] = 'Neighbour-joining'
-    if options.clustering:
-        params['clustering'] = options.clustering
-    
+        if not options.pim:
+            params['pim'] = 'false'
+        if options.pim:
+            params['pim'] = options.pim
 
-    if not options.pim:
-        params['pim'] = 'false'
-    if options.pim:
-        params['pim'] = options.pim
-    
-
-
-    # Submit the job
-    jobId = serviceRun(options.email, options.title, params)
-    if options.asyncjob: # Async mode
-        print(jobId)
-        if outputLevel > 0:
-            print("To check status: python %s --status --jobid %s"
-                  "" % (os.path.basename(__file__), jobId))
-    else:
-        # Sync mode
-        if outputLevel > 0:
-            print("JobId: " + jobId, file=sys.stderr)
-        else:
+        # Submit the job
+        jobId = serviceRun(options.email, options.title, params)
+        if options.asyncjob:  # Async mode
             print(jobId)
-        time.sleep(pollFreq)
-        getResult(jobId)
-# Get job status
-elif options.jobid and options.status:
-    printGetStatus(options.jobid)
+            if outputLevel > 0:
+                print("To check status: python %s --status --jobid %s"
+                      "" % (os.path.basename(__file__), jobId))
+        else:
+            # Sync mode
+            if outputLevel > 0:
+                print("JobId: " + jobId, file=sys.stderr)
+            else:
+                print(jobId)
+            time.sleep(pollFreq)
+            getResult(jobId)
+    # Get job status
+    elif options.jobid and options.status:
+        printGetStatus(options.jobid)
 
-elif options.jobid and (options.resultTypes or options.polljob):
-    status = serviceGetStatus(options.jobid)
-    if status == 'PENDING' or status == 'RUNNING':
-        print("Error: Job status is %s. "
-              "To get result types the job must be finished." % status)
-        quit()
-    # List result types for job
-    if options.resultTypes:
-        printGetResultTypes(options.jobid)
-    # Get results for job
-    elif options.polljob:
-        getResult(options.jobid)
-else:
-    # Checks for 'email' parameter
-    if not options.email:
-        print('\nParameter "--email" is missing in your command. It is required!\n')
+    elif options.jobid and (options.resultTypes or options.polljob):
+        status = serviceGetStatus(options.jobid)
+        if status == 'PENDING' or status == 'RUNNING':
+            print("Error: Job status is %s. "
+                  "To get result types the job must be finished." % status)
+            quit()
+        # List result types for job
+        if options.resultTypes:
+            printGetResultTypes(options.jobid)
+        # Get results for job
+        elif options.polljob:
+            getResult(options.jobid)
+    else:
+        # Checks for 'email' parameter
+        if not options.email:
+            print('\nParameter "--email" is missing in your command. It is required!\n')
 
-    print(u'Error: unrecognised argument combination', file=sys.stderr)
-    print_usage()
+        print(u'Error: unrecognised argument combination', file=sys.stderr)
+        print_usage()

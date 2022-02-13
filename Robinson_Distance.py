@@ -30,7 +30,7 @@ def treeGeneration(file):
 
 
 def printTree(tree, protein, treeFile):
-    sys.stdout = open(treeFile, "w")
+    sys.stdout = open(treeFile, "a")
     print("====== " + protein + " ======")
     print(tree)
 
@@ -46,15 +46,26 @@ def printRobinsonDistance(rf_distancees, robinsonDistanceFile):
 def main():
     con = sys.stdout
     trees = []
-    for protein in proteinList:
-        folder = "results\\" + protein
-        for f in os.listdir(folder):
-            if protein in f:
-                tree = treeGeneration(folder + "\\" + f)
-                trees.append(tree)
-                treeFile = "phylogeneticTrees\\" + protein + "\\" + \
-                    protein + " phylogenetic tree" + ".txt"
-                printTree(tree, protein, treeFile)
+    # for protein in proteinList:
+    # folder = "results\\" + protein
+    # for f in os.listdir(folder):
+    #     if protein in f:
+    #         tree = treeGeneration(folder + "\\" + f)
+    #         trees.append(tree)
+    #         treeFile = "phylogeneticTrees\\" + protein + "\\" + \
+    #             protein + " phylogenetic tree" + ".txt"
+    #         printTree(tree, protein, treeFile)
+
+    folder = "phylogenetic_trees\\"
+    files = os.listdir(os.getcwd()+'//phylogenetic_trees')
+
+    for file in files:
+        tree = treeGeneration(folder + file.split('\\')[-1])
+        trees.append(tree)
+        protein = (file.split('\\')[-1]).split('.')[0]
+        treeFile = "phylogenetic_tree_structures\\" + \
+            protein + "_phylogenetic_tree" + ".txt"
+        printTree(tree, protein, treeFile)
 
     printRobinsonDistance(calculateRobinsonDistance(
         trees), robinsonDistanceFile)

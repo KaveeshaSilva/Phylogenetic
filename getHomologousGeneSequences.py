@@ -14,7 +14,7 @@ def getCommonSet(proteins, preteinTableFilePath):
         count = 0
         for protein in proteins:
             for i, row in sheet.iterrows():
-                if(protein == row['Protein name']):
+                if(protein in row['Protein name']):
                     count += 1
                     break
 
@@ -39,7 +39,7 @@ def getPositions(preteinTableFilePath, commonBacteriaSet):
             sheet = pd.read_excel(preteinTableFilePath,
                                   sheet_name=bacteria, usecols="C,D,K")
             for i, row in sheet.iterrows():
-                if(protein == row['Protein name']):
+                if(protein in row['Protein name']):
                     start = int(row['Start'])
                     stop = int(row['Stop'])
                     positions[protein][bacteria] = {
@@ -73,7 +73,8 @@ def writeGeneSequences(geneSequences):
         for bacteria in geneSequences[protein]:
             new_fasta.append('>%s\n%s' %
                              (bacteria, geneSequences[protein][bacteria]))
-        outputFile = "homologousGeneSequences/"+protein+".fasta"
+        outputFile = "homologousGeneSequences/" + \
+            '_'.join(protein.split(' '))+".fasta"
         with open(outputFile, 'w') as f:
             f.write('\n'.join(new_fasta))
 
@@ -88,9 +89,9 @@ print('Getting the common bacteria set...')
 commonBacteriaSet = getCommonSet(proteins, preteinTableFilePath)
 print('Found common bacteria set\n')
 print(commonBacteriaSet)
-print('\nGetting positions of genesequenses...')
+print('\nGetting positions of gene sequenses...')
 positions = getPositions(preteinTableFilePath, commonBacteriaSet)
 geneSequences = extractGeneSequences(positions)
-print('Writing Genesequences to fasta files...')
+print('Writing Gene sequences to fasta files...')
 writeGeneSequences(geneSequences)
-print('Finished Writing Genesequences!')
+print('Finished Writing Gene sequences!')
