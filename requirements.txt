@@ -2,3 +2,5 @@ Bio
 tabulate
 ete3
 pandas
+xmltramp2 
+requests
