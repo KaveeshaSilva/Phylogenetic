@@ -10,15 +10,21 @@ robinsonDistanceFile = "robinson_distances.txt"
 
 def calculateRobinsonDistance(trees):
     robinsonDistances = []
+    maximumRobinsonDistances = []
     for i in range(len(trees)-1):
-        tempList = []
-        tempList.append(proteinList[i])
+        tempList1 = []
+        tempList1.append(proteinList[i])
+        tempList2 = []
+        tempList2.append(proteinList[i])
         for k in range(0, i+1):
-            tempList.append("-")
+            tempList1.append("-")
+            tempList2.append("-")
         for j in range(i+1, len(trees)):
-            tempList.append(trees[i].robinson_foulds(trees[j])[0])
-        robinsonDistances.append(tempList)
-    return robinsonDistances
+            tempList1.append(trees[i].robinson_foulds(trees[j])[0])
+            tempList2.append(trees[i].robinson_foulds(trees[j])[1])
+        robinsonDistances.append(tempList1)
+        maximumRobinsonDistances.append(tempList2)
+    return robinsonDistances, maximumRobinsonDistances
 
 
 def treeGeneration(file):
@@ -35,29 +41,26 @@ def printTree(tree, protein, treeFile):
     print(tree)
 
 
-def printRobinsonDistance(rf_distancees, robinsonDistanceFile):
-
+def printRobinsonDistance(robinsonDistances, robinsonDistanceFile):
+    robinsonDistances_, maximumRobinsonDistance = robinsonDistances
     sys.stdout = open(robinsonDistanceFile, "a")
-    print("=========="+" Robinson distance "+"==========")
-    print(tabulate(rf_distancees, headers=[
+    print("=========="+" Robinson distances "+"==========")
+    print("\n"*2)
+    print(tabulate(robinsonDistances_, headers=[
+          " ", proteinList[0], proteinList[1], proteinList[2], proteinList[3]]))
+    print("\n"*6)
+    print("=========="+" Maximum Robinson distances "+"==========")
+    print("\n"*2)
+    print(tabulate(maximumRobinsonDistance, headers=[
           " ", proteinList[0], proteinList[1], proteinList[2], proteinList[3]]))
 
 
 def main():
     con = sys.stdout
     trees = []
-    # for protein in proteinList:
-    # folder = "results\\" + protein
-    # for f in os.listdir(folder):
-    #     if protein in f:
-    #         tree = treeGeneration(folder + "\\" + f)
-    #         trees.append(tree)
-    #         treeFile = "phylogeneticTrees\\" + protein + "\\" + \
-    #             protein + " phylogenetic tree" + ".txt"
-    #         printTree(tree, protein, treeFile)
 
     folder = "phylogenetic_trees\\"
-    files = os.listdir(os.getcwd()+'//phylogenetic_trees')
+    files = os.listdir(os.getcwd()+'\\phylogenetic_trees')
 
     for file in files:
         tree = treeGeneration(folder + file.split('\\')[-1])

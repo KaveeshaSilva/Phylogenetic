@@ -15,14 +15,14 @@ To generate the Phylogenetic Trees using the UPGMA clustering method, DNA sequen
 
 1.To generate DNA sequences alignments run following command in the main directory. 
 
-`python clustalo.py --email <email_address> --stype dna --s`
+`python clustalo.py --email <email_address> --stype dna`
 A new file for each protein with .clustal_num extension will be created in the sequence_alignments folder.
 
 For more details refer https://www.ebi.ac.uk/seqdb/confluence/display/JDSAT/Clustal+Omega+Help+and+Documentation
 
 2.To generate the Phylogenetic Trees run following comant in the main directory
 
-`python simple_phylogeny.py --email <email_address> --clustering UPGMA
+`python simple_phylogeny.py --email <email_address> --clustering UPGMA`
 A new file for each protein, with .ph will be created in the phylogenetic_trees folder with Phylogenetic Trees.
 
 For more details refer https://www.ebi.ac.uk/seqdb/confluence/display/JDSAT/Simple+Phylogeny+Help+and+Documentation#SimplePhylogenyHelpandDocumentation-WebServices
